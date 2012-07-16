@@ -21,19 +21,44 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+namespace GDAPI;
 
-require_once('class/CustomException.php');
-require_once('class/APIException.php');
+abstract class AbstractCache implements CacheInterface
+{
+  /**
+   * Prefix cache entries with this string to prevent key collisions in shared caches.
+   *
+   * @var string $prefix
+   */
+  protected static $prefix = '';
 
-require_once('class/RequestInterface.php');
-require_once('class/CurlRequest.php');
-require_once('class/CacheInterface.php');
+  /**
+   * Default time-to-live for variables in the cache
+   *
+   * @var integer $ttl
+   */
+  protected static $ttl = 600;
 
-require_once('class/Resource.php');
-require_once('class/Error.php');
-require_once('class/Collection.php');
-require_once('class/Type.php');
+  /**
+   *
+   */
+  public static function init($prefix = '', $ttl = 600)
+  {
+    self::$prefix = $prefix;
+    self::$ttl = $ttl;
+  }
 
-require_once('class/Client.php');
+  /**
+   * Change the prefix
+   * 
+   * @param string $prefix The new prefix
+   */
+  public static function setPrefix($prefix = '')
+  {
+    self::$prefix = $prefix;
+  }
+
+
+}
 
 ?>

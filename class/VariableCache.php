@@ -21,19 +21,46 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+namespace GDAPI;
 
-require_once('class/CustomException.php');
-require_once('class/APIException.php');
+class VariableCache extends AbstractCache
+{
+  private static $cache = array();
 
-require_once('class/RequestInterface.php');
-require_once('class/CurlRequest.php');
-require_once('class/CacheInterface.php');
+  public static function get($key, &$status = false)
+  {
+    $status = true;
+    if ( isset(self::$cache[self::$prefix . $key]) )
+    { 
+      return self::$cache[self::$prefix . $key];
+    }
 
-require_once('class/Resource.php');
-require_once('class/Error.php');
-require_once('class/Collection.php');
-require_once('class/Type.php');
+    $status = false;
+    return null;
+  }
 
-require_once('class/Client.php');
+  public static function set($key, $val, $ttl = null)
+  {
+    self::$cache[self::$prefix . $key] = $val;
+    return true;
+  }
+
+  public static function remove($key)
+  {
+    if (!isset(self::$cache[self::$prefix . $key]))
+    {  
+      return false;
+    }  
+
+    unset(self::$cache[self::$prefix . $key]);
+    return true;
+  }
+
+  public static function clear()
+  {
+    self::$cache = array();
+    return true;
+  }
+}
 
 ?>
