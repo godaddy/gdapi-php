@@ -30,7 +30,7 @@ $client = new \GDAPI\Client($url, $access_key, $secret_key);
 ?>
 ```
 
-Listing Collections of Resources
+Finding Resources
 --------
 Each resource type in the API is available as a member of the Client.
 
@@ -38,9 +38,10 @@ Each resource type in the API is available as a member of the Client.
 ```php
 <?php
 $machines = $client->virtualmachine->query();
+echo "There are " . count($machines) . " machines:\n";
 foreach ( $machines as $machine )
 {
-  echo $machine->getName();
+  echo $machine->getName() . "\n";
 }
 ?>
 ```
@@ -54,21 +55,51 @@ $http_balancers = $client->loadbalancers->query(array(
 ));
 
 $privileged_portforwards = $client->portforwards->query(array(
-  array('modifier' => 'lt', 'value' => 1024)
+  'publicStartPort' => array('modifier' => 'lt', 'value' => 1024)
+));
+
+$active_machines = $client->virtualmachine->query(array(
+  'removed' => array('modifier' => 'null')
 ));
 ?>
 ```
 
-Getting a single Resource
---------
+### Getting a single Resource by ID
+If you know the ID of the resource you are looking for already, you can also get it directly.
 ```php
 <?php
-$machine = $client->virtualmachine->getById('your-vm-id');
+$machine = $client->virtualmachine->getById('your-machine-id');
 ?>
 ```
 
-Creating Resources
+Working with Resources
 --------
+
+### Accessing attributes
+Resources have a getter method for each attribute, as "get"+{attribute name}.  Attributes that can be changed also have a "set"+{attribute name} method.  The first character of the attribute name may be capitalized for readability, but the rest of the name must match the API.
+
+```php
+<?php
+$machine = $client->virtualmachine->getById('your-machine-id');
+
+$privateIp = $machine->getPrivateIpv4Address(); // e.g. '10.1.1.3'
+$size = $machine->getRamSizeMb(); // e.g. 1024
+?>
+```
+
+### Making changes
+```php
+<?php
+$machine = $client->virtualmachine->getById('your-machine-id');
+$machine->setName('bigger machine');
+$machine->setOffering('2gb-4cpu');
+
+// Save the changes
+$result = $machine->save();
+?>
+```
+
+### Creating new resources
 ```php
 <?php
 $network = $client->network->create(array(
@@ -79,27 +110,127 @@ $network = $client->network->create(array(
 ?>
 ```
 
-Editing Resources
---------
+### Removing resources
 
-Deleting Resources
---------
+With an instance of the resource:
+```php
+<?php
+$machine = $client->virtualmachine->getById('your-machine-id');
+$result = $machine->remove();
+?>
+```
 
-Executing Actions
---------
+Or statically:
+```php
+<?php
+$result = $client->virtualmachine->remove('your-machine-id');
+?>
+```
 
-Following Links
---------
-
-Mapping response objects to your own class
---------
-
-Handling Errors
---------
-
+### Executing Actions
+Actions are used to perform operations that go beyond simple create/read/update/delete.  Resources have a "do"+{action name} method for each action.  The first character of the action name may be capitalized for readability, but the rest of the name must match the API.
 
 ```php
 <?php
-
+$machine = $client->virtualmachine->getById('your-machine-id');
+$result = $machine->doRestart();
 ?>
 ```
+
+Following Links
+--------
+Response collections and resources generally have a "links" attribute containing URLs to related resources and collections.  For example a virtual machine belongs to a network and has one or more volumes.  Resources have a "fetch"+{link name} method for each link.  Invoking this will return the linked resource
+```php
+<?php
+$machine = $client->virtualmachine->getById('your-machine-id');
+$network = $machine->fetchNetwork(); // Network resource
+$volumes = $machine->fetchVolumes(); // Collection of Volume resources
+?>
+```
+
+Handling Errors
+--------
+By default, any error response will be thrown as an exception.  The most general type of exception is \GDAPI\APIException, but several more specific types are defined in class/APIException.php.
+```php
+<?php
+try
+{
+  $machine = $client->virtualmachine->getById('your-machine-id');
+  echo "I found it";
+}
+catch ( \GDAPI\NotFoundException $e )
+{
+  echo "I couldn't find that machine";
+}
+catch ( \GDAPI\APIException $e )
+{
+  echo "Something else went wrong";
+}
+?>
+```
+
+If you prefer to not use exceptions, the client has an option to disable them.  When an error occurs, the response will be an instance of \GDAPI\Error.
+```php
+<?php
+$machine = $client->virtualmachine->getById('your-machine-id');
+if ( $machine instanceof \GDAPI\Error )
+{
+  if ( $machine->getStatus() == 404 )
+  {
+    echo "I couldn't find that machine";
+  }
+  else
+  {
+    echo "Something else went wrong: " . print_r($machine,true);
+  }
+}
+else
+{
+  echo "I found it";
+}
+?>
+```
+
+Advanced Options
+--------
+### Mapping response objects to your own classes
+By default all response objects are an instance of \GDAPI\Resource, \GDAPI\Collection, or \GDAPI\Error.  In many cases it is useful to map responses to your own classes and add your own behavior to them.
+```php
+<?php
+
+class MyVM extends \GDAPI\Resource
+{
+  function getFQDN()
+  {
+    $network = $this->fetchNetwork();
+    return $this->getName() . "." . $network->getDomain();
+  }
+}
+
+class MyLoadBalancer extends \GDAPI\Resource
+{
+  function getFQDN()
+  {
+    $network = $this->fetchNetwork();
+    return $this->getName() . "." . $network->getDomain();
+  }
+}
+
+$classmap = array(
+  'virtualmachine' => 'MyVM',
+  'loadbalancer'   => 'MyLoadBalancer'
+);
+
+$client = new \GDAPI\Client($url, $access_key, $secret_key);
+
+$machines = $client->virtualmachine->query();
+echo "There are " . count($machines) . " machines:\n";
+foreach ( $machines as $machine )
+{
+  echo $machine->getFQDN() ."\n";
+}
+?>
+```
+
+### More options
+For info on other options that are available, see the $defaults array in class/Client.php.
