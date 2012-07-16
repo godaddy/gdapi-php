@@ -21,19 +21,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+namespace GDAPI;
 
-require_once('class/CustomException.php');
-require_once('class/APIException.php');
-
-require_once('class/RequestInterface.php');
-require_once('class/CurlRequest.php');
-require_once('class/CacheInterface.php');
-
-require_once('class/Resource.php');
-require_once('class/Error.php');
-require_once('class/Collection.php');
-require_once('class/Type.php');
-
-require_once('class/Client.php');
-
-?>
+interface RequestInterface
+{
+  public function __construct(&$client, $base_url, $options=array());
+  public function setAuth($access_key, $secret_key);
+  public function request($method, $path, $qs=array(), $body=null, $content_type=false);
+  public function getMeta();
+}

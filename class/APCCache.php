@@ -21,19 +21,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+namespace GDAPI;
 
-require_once('class/CustomException.php');
-require_once('class/APIException.php');
+class APCCache extends AbstractCache
+{
+  public static function get($key, &$status = false)
+  {
+    return apc_fetch(static::$prefix . $key, $status);
+  }
 
-require_once('class/RequestInterface.php');
-require_once('class/CurlRequest.php');
-require_once('class/CacheInterface.php');
+  public static function set($key, $val, $ttl = null)
+  {
+    return apc_store(self::$prefix . $key, $val, $ttl);
+  }
 
-require_once('class/Resource.php');
-require_once('class/Error.php');
-require_once('class/Collection.php');
-require_once('class/Type.php');
+  public static function remove($key)
+  {
+    return apc_delete(self::$prefix . $key);
+  }
 
-require_once('class/Client.php');
+  public static function clear($type = null)
+  {
+    return apc_clear_cache('user');
+  }
+}
 
 ?>
