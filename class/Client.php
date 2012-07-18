@@ -27,7 +27,7 @@ class Client
 {
   const VERSION = "1.0.0";
 
-  const JSON = 'application/json';
+  const MIME_TYPE_JSON = 'application/json';
 
   /*
    * An instance of a class that implements CacheInterface.  If set,
@@ -129,7 +129,9 @@ class Client
     /*
      * Name => Value mapping or HTTP headers to send with every request.
      */
-    'headers'             => array(),
+    'headers'             => array(
+      'Accept'  => MIME_TYPE_JSON,
+    ),
 
     /* -------------------------*
      * Even less common options *
