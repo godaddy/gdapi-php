@@ -72,13 +72,13 @@ class Resource
       $name = lcfirst(substr($callName,3));
       if ( array_key_exists($name, $this->meta) )
       {
-        // Return timestamps in seconds, not milliseconds.
+        // Return timestamps in seconds, as is tradition, instead of milliseconds.
         if ( strtoupper(substr($name, -2)) == 'TS' )
         {
-          $type = $this->getType();
-          $shortname = substr($name, 0, -2);
-          $field = $this->getClient()->{$type}->field($shortname);
-          if ( $field && isset($field->type) && $field->type == 'date' )
+          $short_name = substr($name,0,-2);
+          $field = $this->schemaField($short_name);
+
+          if ( isset($field, $field->type) && $field->type == 'date' )
           {
             return $this->meta[$name]/1000;
           }
@@ -88,7 +88,13 @@ class Resource
       }
       else
       {
-        trigger_error("Attempted to access unknown property '$name' on Resource object: " . print_r($this->meta,true), E_USER_WARNING);
+        $field = $this->schemaField($name);
+
+        if ( !isset($field) )
+        {
+          trigger_error("Attempted to access unknown property '$name' on " . __CLASS__ . " object: " . print_r($this->meta,true), E_USER_WARNING);
+        }
+
         return null;
       }
     }
@@ -104,6 +110,20 @@ class Resource
       $name = lcfirst(substr($callName,2));
       return $this->doAction($name,$args);
     }
+  }
+
+  protected function schemaField($name)
+  {
+    $type_name = $this->getType();
+    $type = $this->getClient()->{$type_name};
+
+    if ( !$type )
+    {
+      return null;
+    }
+    
+    $field = $type->field($name);
+    return $field;
   }
 
   public function metaIsSet($name)
