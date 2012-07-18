@@ -6,7 +6,7 @@ A PHP client for Go Daddy&reg; REST APIs.
 Requirements
 ---------
 * PHP 5.3 or greater
-* [libcurl](http://us3.php.net/curl) extension
+* [libcurl](http://us3.php.net/curl) PHP extension with SSL support
 * An account in a compatible service, such as [Cloud Servers&trade;](http://www.godaddy.com/hosting/cloud-computing.aspx)
 * Your API Access and Secret key pair
 
@@ -29,6 +29,11 @@ $secret_key = 'your-secret-key';
 $client = new \GDAPI\Client($url, $access_key, $secret_key);
 ?>
 ```
+
+### Problems connecting
+Consult the [SSL Problems](#ssl-problems) section if you get an error when creating the client that says something like this:
+> SSL certificate problem, verify that the CA cert is OK.
+> Details: error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed
 
 Finding Resources
 --------
@@ -221,11 +226,7 @@ $classmap = array(
   'loadbalancer'   => 'MyLoadBalancer'
 );
 
-$options = array(
-  'classmap' => $classmap
-);
-
-$client = new \GDAPI\Client($url, $access_key, $secret_key, $options);
+$client = new \GDAPI\Client($url, $access_key, $secret_key);
 
 $machines = $client->virtualmachine->query();
 echo "There are " . count($machines) . " machines:\n";
@@ -233,6 +234,26 @@ foreach ( $machines as $machine )
 {
   echo $machine->getFQDN() ."\n";
 }
+?>
+```
+
+SSL Problems
+--------
+Some installations of libcurl do not come with certificates for any Certificate Authorities (CA). This client always verifies the certificate by default, but having no CA certificates means it won't be able to verify any SSL certificate.  To fix this problem, you need a list of CA certificates to trust.   Curl provides a copy that contains the same CA certs as Mozilla browsers: [cacert.pem](http://curl.haxx.se/ca/cacert.pem).
+
+If you have permission to edit your php.ini, you can fix this globally for anything that uses the libcurl extension:
+
+Add a line like this to your php.ini, then restart your web server, if applicable:
+> curl.cainfo = /path/to/cacert.pem
+
+If you don't have permission, or don't want to make a global change, you can configure just the GDAPI client to use the file:
+```php
+<?php
+$options = array(
+  'ca_cert' => '/path/to/cacert.pem'
+);
+
+$client = new \GDAPI\Client($url, $access_key, $secret_key, $options);
 ?>
 ```
 
