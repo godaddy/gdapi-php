@@ -95,6 +95,11 @@ class Client
     'ca_cert'             => '',
 
     /*
+     * Path to a directory containing certificate authorities that are trusted
+     */
+    'ca_path'             => '',
+
+    /*
      * Timeout for establishing an initial connection to the API, in seconds.
      *  cURL >= 7.16.2 support floating-point values with millisecond resolution.
      */
