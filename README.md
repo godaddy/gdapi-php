@@ -226,7 +226,11 @@ $classmap = array(
   'loadbalancer'   => 'MyLoadBalancer'
 );
 
-$client = new \GDAPI\Client($url, $access_key, $secret_key);
+$options = array(
+  'classmap' => $classmap
+);
+
+$client = new \GDAPI\Client($url, $access_key, $secret_key, $options);
 
 $machines = $client->virtualmachine->query();
 echo "There are " . count($machines) . " machines:\n";
