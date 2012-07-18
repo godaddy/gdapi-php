@@ -538,7 +538,7 @@ class Client
    */
   public function getMeta()
   {
-    return $this->last;
+    return $this->requestor->getMeta();
   }
 }
 
