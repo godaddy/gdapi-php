@@ -58,6 +58,16 @@ class CurlRequest implements RequestInterface
       CURLOPT_RETURNTRANSFER  => true,
     );
 
+    if ( $o['ca_cert'] )
+    {
+      $curl_opt[CURLOPT_CAINFO] = $o['ca_cert'];
+    }
+
+    if ( $o['ca_path'] )
+    {
+      $curl_opt[CURLOPT_CAPATH] = $o['ca_path'];
+    }
+
     if ( static::supportsMSTimeouts() )
     {
       $curl_opt[CURLOPT_TIMEOUT_MS]         = ceil($o['response_timeout']*1000);

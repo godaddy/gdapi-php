@@ -25,9 +25,9 @@ namespace GDAPI;
 
 class Client
 {
-  const VERSION = "1.0.0";
+  const VERSION = "1.0.1";
 
-  const JSON = 'application/json';
+  const MIME_TYPE_JSON = 'application/json';
 
   /*
    * An instance of a class that implements CacheInterface.  If set,
@@ -95,6 +95,11 @@ class Client
     'ca_cert'             => '',
 
     /*
+     * Path to a directory containing certificate authorities that are trusted
+     */
+    'ca_path'             => '',
+
+    /*
      * Timeout for establishing an initial connection to the API, in seconds.
      *  cURL >= 7.16.2 support floating-point values with millisecond resolution.
      */
@@ -124,7 +129,9 @@ class Client
     /*
      * Name => Value mapping or HTTP headers to send with every request.
      */
-    'headers'             => array(),
+    'headers'             => array(
+      'Accept'  => MIME_TYPE_JSON,
+    ),
 
     /* -------------------------*
      * Even less common options *
@@ -531,7 +538,7 @@ class Client
    */
   public function getMeta()
   {
-    return $this->last;
+    return $this->requestor->getMeta();
   }
 }
 
