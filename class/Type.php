@@ -59,7 +59,7 @@ class Type
     $data = ( $obj instanceof Resource ? $obj->getMeta() : $obj );
     $url = $this->getUrl();
     $client = $this->getClient();
-    return $client->request('POST', $url, array(), $data, true);
+    return $client->request('POST', $url, array(), $data, Client::MIME_TYPE_JSON);
   }
 
   public function remove($id_or_obj)

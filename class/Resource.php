@@ -226,7 +226,7 @@ class Resource
     }
 
     $client = $this->getClient();
-    return $client->request('POST', $link, array(), $opt, true);
+    return $client->request('POST', $link, array(), $opt, Client::MIME_TYPE_JSON);
   }
 
   public function getMeta()
@@ -238,7 +238,7 @@ class Resource
   {
     $link = $this->getLink('self');
     $client = $this->getClient();
-    return $client->request('PUT', $link, array(), $this->meta, true);
+    return $client->request('PUT', $link, array(), $this->meta, Client::MIME_TYPE_JSON);
   }
 
   public function remove()
