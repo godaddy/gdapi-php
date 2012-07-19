@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 /*
  * Copyright (c) 2012 Go Daddy Operating Company, LLC
@@ -21,17 +22,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+namespace GDAPI;
 
-require_once('class/CustomException.php');
-require_once('class/APIException.php');
+include '../gdapi-php.phar';
 
-require_once('class/RequestInterface.php');
-require_once('class/CurlRequest.php');
-require_once('class/CacheInterface.php');
+$url        = 'https://api.cloud.secureserver.net/v1/schemas';
+$url        = 'http://dbext01.dev.dbnow.ide/v1/schemas';
+$access_key = 'C18BB8A947E63B25CB02';
+$secret_key = 'KL6p1B2iVUNwjmFZ4Q2ofa1VA2tfKAHsGSjwHcGE';
 
-require_once('class/Resource.php');
-require_once('class/Error.php');
-require_once('class/Collection.php');
-require_once('class/Type.php');
+$client = new \GDAPI\Client($url, $access_key, $secret_key);
 
-require_once('class/Client.php');
+var_dump($client->database->query());
