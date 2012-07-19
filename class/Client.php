@@ -130,7 +130,7 @@ class Client
      * Name => Value mapping or HTTP headers to send with every request.
      */
     'headers'             => array(
-      'Accept'  => MIME_TYPE_JSON,
+      'Accept'  => self::MIME_TYPE_JSON,
     ),
 
     /* -------------------------*
