@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 /*
  * Copyright (c) 2012 Go Daddy Operating Company, LLC
@@ -21,17 +22,39 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+namespace GDAPI;
 
-require_once('class/CustomException.php');
-require_once('class/APIException.php');
+$classPath = '../class/';
+$initPath = '../';
+$pharName = '../gdapi-php.phar';
 
-require_once('class/RequestInterface.php');
-require_once('class/CurlRequest.php');
-require_once('class/CacheInterface.php');
+// create the phar archive
+$oPhar = new \Phar('./' . $pharName);
 
-require_once('class/Resource.php');
-require_once('class/Error.php');
-require_once('class/Collection.php');
-require_once('class/Type.php');
+// create a directory iterator for the class dir
+$oDir = new \RecursiveIteratorIterator(
+  new \RecursiveDirectoryIterator($classPath),
+  \RecursiveIteratorIterator::SELF_FIRST
+);
 
-require_once('class/Client.php');
+// add the classes
+foreach($oDir as $file) {
+
+	// exclude . & ..
+	if($file->isFile()) {
+
+		// add to the archive, not stripping whitespace or anything for now
+		$oPhar->addFromString($file->getFilename(), file_get_contents($file));
+
+	}
+}
+
+// create the stub from the init file
+$stub = str_replace(
+  "('class/",
+  "('phar://$pharName/",
+  file_get_contents($initPath . '/init.php')
+) . " __HALT_COMPILER(); ?>";
+
+// set the stub, and all done!
+$oPhar->setStub($stub);
