@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/php -d phar.readonly=0
 <?php
 /*
  * Copyright (c) 2012 Go Daddy Operating Company, LLC
@@ -24,9 +24,11 @@
 
 namespace GDAPI;
 
+chdir(dirname(__FILE__));
+
 $classPath = '../class/';
 $initPath = '../';
-$pharName = '../gdapi-php.phar';
+$pharName = '../gdapi.phar';
 
 // create the phar archive
 $oPhar = new \Phar('./' . $pharName);

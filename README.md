@@ -15,13 +15,38 @@ Getting Started
 If you haven't already tried it, open up the base URL of the API you want to use in a browser.
 Enter your Access Key as the username and your Secret Key as the password.
 This interface will allow you to get familiar with what Resource types are available in the API
-and what operations and actions you can perform on them.
+and what operations and actions you can perform on them.  For more information, see the [documentation site](http://docs.cloud.secureserver.net/).
 
-Connecting
---------
+Setting Up
+---------
+A PHAR archive of the latest stable version is available over in the [Downloads page](https://github.com/godaddy/gdapi-php/downloads), or you can use source code directly.
+
+### Using the PHAR Archive
+Download the .phar file:
+> curl -O https://github.com/downloads/godaddy/gdapi-php/gdapi.phar
+
+Create a client:
 ```php
 <?php
-require_once('gdapi-php/init.php');
+require_once('gdapi.phar'); // Or /path/to/gdapi.phar
+
+$url        = 'https://api.cloud.secureserver.net/v1/schemas';
+$access_key = 'your-access-key';
+$secret_key = 'your-secret-key';
+    
+$client = new \GDAPI\Client($url, $access_key, $secret_key);
+?>
+```
+
+### Using the source
+Download the source:
+> git clone https://github.com/godaddy/gdapi-php.git
+
+Create a client:
+```php
+<?php
+require_once('gdapi-php/init.php'); // Or /path/to/gdapi-php/init.php
+
 $url        = 'https://api.cloud.secureserver.net/v1/schemas';
 $access_key = 'your-access-key';
 $secret_key = 'your-secret-key';
