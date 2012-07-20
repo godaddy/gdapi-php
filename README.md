@@ -287,4 +287,4 @@ $client = new \GDAPI\Client($url, $access_key, $secret_key, $options);
 ```
 
 ### More options
-For info on other options that are available, see the $defaults array in class/Client.php.
+For info on other options that are available, see the $defaults array in [class/Client.php](https://github.com/godaddy/gdapi-php/blob/master/class/Client.php#L44).
