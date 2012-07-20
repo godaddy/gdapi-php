@@ -19,7 +19,7 @@ and what operations and actions you can perform on them.  For more information, 
 
 Setting Up
 ---------
-A PHAR archive of the latest stable version is available over in the [Downloads page](https://github.com/godaddy/gdapi-php/downloads), or you can use source code directly.
+A PHAR archive of the latest stable version is available over in the [Downloads page](https://github.com/godaddy/gdapi-php/downloads).  We recommend you use this rather than the source code from the repo directly.
 
 ### Using the PHAR Archive
 Download the .phar file:
@@ -39,7 +39,7 @@ $client = new \GDAPI\Client($url, $access_key, $secret_key);
 ```
 
 ### Using the source
-Download the source:
+To use the source code instead, clone it:
 > git clone https://github.com/godaddy/gdapi-php.git
 
 Create a client:
