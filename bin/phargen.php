@@ -29,6 +29,7 @@ chdir(dirname(__FILE__));
 $classPath = '../class/';
 $initPath = '../';
 $pharName = '../gdapi.phar';
+$pharVersionedName = '../gdapi-VERSION.phar';
 
 // create the phar archive
 $oPhar = new \Phar('./' . $pharName);
@@ -60,3 +61,7 @@ $stub = str_replace(
 
 // set the stub, and all done!
 $oPhar->setStub($stub);
+
+require_once('../class/Client.php');
+$pharVersionedName = str_replace("VERSION", Client::VERSION , $pharVersionedName);
+copy($pharName, $pharVersionedName);
