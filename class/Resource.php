@@ -110,6 +110,12 @@ class Resource
       $name = lcfirst(substr($callName,2));
       return $this->doAction($name,$args);
     }
+    else if ( strpos($callName, 'can') === 0 )
+    {
+      $name = lcfirst(substr($callName,3));
+      return $this->canAction($name);
+    }
+
   }
 
   protected function schemaField($name)
@@ -205,6 +211,11 @@ class Resource
     return null;
   }
 
+  protected function canAction($name)
+  {
+    return isset($this->actions->{$name});
+  }
+
   protected function doAction($name,$args)
   {
     $opt = array();
@@ -213,7 +224,7 @@ class Resource
       $opt = $args[0];
     }
 
-    if (!isset($this->actions->{$name}) )
+    if (!$this->canAction($name) )
     {
       return null;
     }
