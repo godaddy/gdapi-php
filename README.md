@@ -180,7 +180,8 @@ $volumes = $machine->fetchVolumes(); // Collection of Volume resources
 
 Handling Errors
 --------
-By default, any error response will be thrown as an exception.  The most general type of exception is \GDAPI\APIException, but several more specific types are defined in class/APIException.php.
+By default, any error response will be thrown as an exception.
+The most general type of exception is \GDAPI\APIException, but several more specific types are defined in class/APIException.php.
 ```php
 <?php
 try
@@ -198,20 +199,30 @@ catch ( \GDAPI\APIException $e )
 }
 ?>
 ```
+It is important that you put the catch blocks from most-specific to least-specfic classes.
+PHP runs through your catch statements in order and only calls the first one that matches the exception.
+If you flipped the two catches above, "Something else went wrong" would be printed for any exception, even if it was a NotFoundException.
 
-If you prefer to not use exceptions, the client has an option to disable them.  When an error occurs, the response will be an instance of \GDAPI\Error.
+If you prefer to not use exceptions, you can disable them when creating the Client.
+When an error occurs, instead of throwing an exception the response returned will be an instance of \GDAPI\Error.
 ```php
 <?php
-$machine = $client->virtualmachine->getById('your-machine-id');
-if ( $machine instanceof \GDAPI\Error )
+$options = array(
+  'throw_exceptions' => false
+);
+
+$client = new \GDAPI\Client($url, $access_key, $secret_key, $options);
+
+$result = $client->virtualmachine->getById('your-machine-id');
+if ( $result instanceof \GDAPI\Error )
 {
-  if ( $machine->getStatus() == 404 )
+  if ( $result->getStatus() == 404 )
   {
     echo "I couldn't find that machine";
   }
   else
   {
-    echo "Something else went wrong: " . print_r($machine,true);
+    echo "Something else went wrong: " . print_r($result,true);
   }
 }
 else
