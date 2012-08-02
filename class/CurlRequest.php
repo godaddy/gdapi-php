@@ -223,6 +223,9 @@ class CurlRequest implements RequestInterface
     else if ( $method == 'POST' )
     {
       $headers['Content-Length'] = 0;
+
+      // Must set this to null to clear out the body from a previous request
+      curl_setopt($this->curl, CURLOPT_POSTFIELDS, null);
     }
 
     curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $method);
