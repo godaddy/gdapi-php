@@ -21,17 +21,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+ $dir = dirname(__FILE__);
 
-require_once('class/CustomException.php');
-require_once('class/APIException.php');
+require_once($dir . '/class/CustomException.php');
+require_once($dir . '/class/APIException.php');
 
-require_once('class/RequestInterface.php');
-require_once('class/CurlRequest.php');
-require_once('class/CacheInterface.php');
+require_once($dir . '/class/RequestInterface.php');
+require_once($dir . '/class/CurlRequest.php');
 
-require_once('class/Resource.php');
-require_once('class/Error.php');
-require_once('class/Collection.php');
-require_once('class/Type.php');
+require_once($dir . '/class/CacheInterface.php');
+require_once($dir . '/class/AbstractCache.php');
+require_once($dir . '/class/VariableCache.php');
+require_once($dir . '/class/APCCache.php');
 
-require_once('class/Client.php');
+require_once($dir . '/class/Resource.php');
+require_once($dir . '/class/Error.php');
+require_once($dir . '/class/Collection.php');
+require_once($dir . '/class/Type.php');
+
+require_once($dir . '/class/Client.php');
+
+?>
