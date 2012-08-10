@@ -68,19 +68,15 @@ interface CacheInterface
    *               will be deleted
    * @return boolean
    */
-  public static function delete($key);
+  public static function remove($key);
 
 
 
   /**
    * Cache clear.  Clears all cache keys.
-   *
-   * @param string $type Some caching layers group their cached variables.
-   *                You probably shouldn't change this unless you know
-   *                the underlying caching mechanism.
    * @return boolean
    */
-  public static function clear($type = null);
+  public static function clear();
 }
 
 ?>
