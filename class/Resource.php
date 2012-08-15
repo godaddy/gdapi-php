@@ -73,7 +73,7 @@ class Resource
       if ( array_key_exists($name, $this->meta) )
       {
         // Return timestamps in seconds, as is tradition, instead of milliseconds.
-        if ( strtoupper(substr($name, -2)) == 'TS' )
+        if ( $this->meta[$name] !== null && strtoupper(substr($name, -2)) == 'TS' )
         {
           $short_name = substr($name,0,-2);
           $field = $this->schemaField($short_name);
