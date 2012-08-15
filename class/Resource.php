@@ -211,12 +211,12 @@ class Resource
     return null;
   }
 
-  protected function canAction($name)
+  public function canAction($name)
   {
     return isset($this->actions->{$name});
   }
 
-  protected function doAction($name,$args)
+  public function doAction($name,$args)
   {
     $opt = array();
     if ( isset($args,$args[0]) )
