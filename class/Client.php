@@ -227,7 +227,7 @@ class Client
     $this->options = array_replace_recursive(static::$defaults, $options);
 
     $request_class = $this->options['request_class'];
-    $this->requestor = new $request_class($this, $this->base_url, $this->options);
+    $this->requestor = new $request_class($this, $this->base_url);
 
     if ( $access_key && $secret_key )
     {
@@ -245,6 +245,33 @@ class Client
   public function __destruct()
   {
     unset(static::$clients[$this->id]);
+  }
+
+  /*
+   * Set a single option
+   * @param string $name Option name
+   * @param string $value Option value
+   */
+  public function setOption($name,$value)
+  {
+    $this->options[$name] = $value;
+  }
+
+  /*
+   * Set multiple options
+   * @param array $opts name => value map of options
+   */
+  public function setOptions($opts)
+  {
+    foreach ( $opts as $k => $v )
+    {
+      $this->options[$name] = $value;
+    }
+  }
+
+  public function getOptions()
+  {
+    return $this->options;
   }
 
   /*

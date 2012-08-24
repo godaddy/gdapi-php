@@ -36,17 +36,17 @@ class CurlRequest implements RequestInterface
   protected $last;
 
 
-  public function __construct(&$client, $base_url, $options=array())
+  public function __construct(&$client, $base_url)
   {
     $this->client = $client;
     $this->curl = curl_init();
     $this->base_url = $base_url;
-    $this->setOptions($options);
+    $this->applyOptions();
   }
 
-  protected function setOptions($o)
+  protected function applyOptions()
   {
-    $this->options = $o;
+    $o = $this->client->getOptions();
 
     $curl_opt = array(
       CURLOPT_USERAGENT       => static::getUserAgent(),
@@ -165,7 +165,7 @@ class CurlRequest implements RequestInterface
 
   public function request($method, $path, $qs=array(), $body=null, $content_type=false)
   {
-    $o = &$this->options;
+    $o = &$this->client->getOptions();
     $method = strtoupper($method);
 
     curl_setopt($this->curl, CURLOPT_HEADER, $o['stream_output'] === false );
@@ -293,6 +293,8 @@ class CurlRequest implements RequestInterface
 
   protected function parseResponse($res,$meta)
   {
+    $o = $this->client->getOptions();
+
     $raw_headers  = substr($res,0,$meta['header_size']);
     $raw_body     = substr($res,$meta['header_size']);
 
@@ -328,11 +330,11 @@ class CurlRequest implements RequestInterface
     {
       if ( PHP_VERSION_ID >= 50400 )
       {
-        $json = json_decode($raw_body, false, $this->options['json_depth_limit'], JSON_BIGINT_AS_STRING);
+        $json = json_decode($raw_body, false, $o['json_depth_limit'], JSON_BIGINT_AS_STRING);
       }
       else
       {
-        $json = json_decode($raw_body, false, $this->options['json_depth_limit']);
+        $json = json_decode($raw_body, false, $o['json_depth_limit']);
       }
 
       if ( $err = json_last_error() == JSON_ERROR_NONE )
