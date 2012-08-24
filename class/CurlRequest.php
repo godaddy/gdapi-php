@@ -54,8 +54,6 @@ class CurlRequest implements RequestInterface
       CURLOPT_SSL_VERIFYHOST  => ($o['verify_ssl']       !== false ),
       CURLOPT_FOLLOWLOCATION  => ($o['follow_redirects'] !== false ),
       CURLOPT_MAXREDIRS       =>  $o['max_redirects'],
-      CURLOPT_HEADER          => true,
-      CURLOPT_RETURNTRANSFER  => true,
     );
 
     if ( $o['ca_cert'] )
@@ -170,6 +168,9 @@ class CurlRequest implements RequestInterface
     $o = &$this->options;
     $method = strtoupper($method);
 
+    curl_setopt($this->curl, CURLOPT_HEADER, $o['stream_output'] === false );
+    curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, $o['stream_output'] === false );
+
     $headers = $o['headers'];
     if ( !$headers )
     {
@@ -260,6 +261,10 @@ class CurlRequest implements RequestInterface
     if ( $errno )
     {
       return $this->client->error($error,'request',$this->last);
+    }
+    else if ( $o['stream_output'] !== false )
+    {
+      return true;
     }
     else
     {

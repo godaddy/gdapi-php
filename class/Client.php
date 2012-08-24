@@ -85,6 +85,11 @@ class Client
     'schema_file'         => '',
 
     /*
+     * If set, responses will be written directly to stdout/the browser
+     */
+    'stream_output'       => false,
+
+    /*
      * Verify SSL certificate when connecting
      */
     'verify_ssl'          => true,
