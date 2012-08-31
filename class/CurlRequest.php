@@ -198,7 +198,7 @@ class CurlRequest implements RequestInterface
     }
     curl_setopt($this->curl, CURLOPT_URL, $url);
 
-    if ( $body )
+    if ( $body !== null )
     {
       // JSON encode objects that are passed in
       if ( $content_type && stripos($content_type,'json') !== false && !is_string($body) )
