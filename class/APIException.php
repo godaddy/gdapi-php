@@ -114,7 +114,8 @@ APIException::$status_map = array(
   405       => '\GDAPI\MethodException',
   406       => '\GDAPI\NotAcceptableException',
   409       => '\GDAPI\ConflictException',
-  500       => '\GDAPI\UnavailableException',
+  500       => '\GDAPI\ServiceException',
+  503       => '\GDAPI\UnavailableException'
 );
 
 
