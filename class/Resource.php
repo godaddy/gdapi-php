@@ -218,7 +218,7 @@ class Resource
 
   public function doAction($name,$args)
   {
-    $opt = array();
+    $opt = null;
     if ( isset($args,$args[0]) )
     {
       $opt = $args[0];
