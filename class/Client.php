@@ -468,7 +468,7 @@ class Client
    */
   protected function classifyRecursive($data, $depth=0, $as='auto')
   {
-    if ( $as == 'auto' )
+    if ( $as === 'auto' )
     {
       if ( is_object($data) )
       {
@@ -484,9 +484,9 @@ class Client
       }
     }
 
-    if ( $as == 'object' )
+    if ( $as === 'object' )
     {
-      $type = '';
+      $type = null;
       $type_attr = $this->options['type_attr'];
       if ( isset($data->{$type_attr}) )
       {
@@ -495,9 +495,13 @@ class Client
         {
           $type = $this->options['classmap'][$type];
         }
+        else
+        {
+          $type = null;
+        }
       }
 
-      if ( ! class_exists($type) )
+      if ( $type === null )
       {
         $type = $this->options['default_class'];
       }
@@ -507,13 +511,17 @@ class Client
       {
         if ( is_array($v) )
         {
-          $data->{$k} = $this->classify($v, $depth+1);
+          $v = $this->classify($v, $depth+1, 'array');
+        }
+        elseif ( is_object($v) && isset($v->{$type_attr},$data->links) && array_key_exists($k,$data->links) )
+        {
+          $v = $this->classify($v, $depth+1, 'object');
         }
       }
 
       $out = new $type($this->id, $data);
     }
-    elseif ( $as == 'array' )
+    elseif ( $as === 'array' )
     {
       $out = array();
       foreach ( $data as $k => &$v )
