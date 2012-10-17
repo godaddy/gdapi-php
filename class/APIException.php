@@ -102,6 +102,7 @@ class ServiceException        extends APIException {};
 class UnavailableException    extends APIException {};
 
 APIException::$status_map = array(
+  'schema'  => '\GDAPI\SchemaException',
   'client'  => '\GDAPI\ClientException',
   'request' => '\GDAPI\HTTPRequestException',
   'parse'   => '\GDAPI\ParseException',

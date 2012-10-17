@@ -25,7 +25,7 @@ namespace GDAPI;
 
 class Client
 {
-  const VERSION = "1.0.7";
+  const VERSION = "1.0.8";
 
   const MIME_TYPE_JSON = 'application/json';
 
@@ -355,23 +355,17 @@ class Client
       return $this->error('Unable to load API schema', 'schema');
     }
 
-    $resTypes = array();
-    if ( $res->metaIsSet('resourceTypes') )
-    {
-      $resTypes = (array)$res->getResourceTypes();  
-    }
-
     if ( $res->getType() == 'apiversion' && $res->getLink('schemas') )
     {
       // The response was the root of a version, with a link to the schemas
       return $this->loadSchemas($res->getLink('schemas'));
     }
-    elseif ( $res instanceof Collection && isset($resTypes['apiversion']) )
+    elseif ( $res instanceof Collection && $res[0] && $res[0]->getType() == 'apiversion' )
     {
       // The response was an API root with no version
-      return $this->error('The base URL "'. $this->base_url.$path .'" does not specify an API version to use');
+      return $this->error('The base URL "'. $this->base_url.$path .'" does not specify an API version to use', 'schema');
     }
-    else if ( $res instanceof Collection && isset($resTypes['schema']) )
+    else if ( $res instanceof Collection && $res[0] && $res[0]->getType() == 'schema' )
     {
       // The response was a list of schemas
 
