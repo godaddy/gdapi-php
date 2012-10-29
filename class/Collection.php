@@ -39,6 +39,20 @@ class Collection extends Resource implements \ArrayAccess, \Iterator, \Countable
     parent::__construct($clientId,$body);
   }
 
+  protected function schemaField($name)
+  {
+    $type_name = $this->getType();
+    $type = $this->getClient()->{$type_name};
+
+    if ( !$type )
+    {
+      return null;
+    }
+    
+    $field = $type->collectionField($name);
+    return $field;
+  }
+
   /* ArrayAccess */
   public function offsetExists($offset)
   {

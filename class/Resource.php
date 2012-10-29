@@ -128,7 +128,7 @@ class Resource
       return null;
     }
     
-    $field = $type->field($name);
+    $field = $type->resourceField($name);
     return $field;
   }
 

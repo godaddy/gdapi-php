@@ -75,9 +75,24 @@ class Type
     return $this->schema;
   }
 
-  public function field($name)
+  public function resourceField($name)
   {
-    $fields =  $this->schema->getFields();
+    if ( $this->schema->metaIsSet('resourceFields') )
+      $fields =  $this->schema->getResourceFields();
+    else
+      $fields =  $this->schema->getFields();
+
+    if ( isset($fields->{$name}) )
+    {
+      return $fields->{$name};
+    }
+
+    return null;
+  }
+
+  public function collectionField($name)
+  {
+    $fields =  $this->schema->getCollectionFields();
     if ( isset($fields->{$name}) )
     {
       return $fields->{$name};
