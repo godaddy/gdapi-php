@@ -91,6 +91,15 @@ $privileged_portforwards = $client->portforwards->query(array(
 $active_machines = $client->virtualmachine->query(array(
   'removed' => array('modifier' => 'null')
 ));
+
+$complicated = $client->portforwards->query(array(
+  'name' => 'asdf',
+  'removed' => array('modifier' => 'null'),
+  'publicStartPort' => array(
+    array('modifier' => 'gt', 'value' => 1024)
+    array('modifier' => 'lt', 'value' => 2048)
+  ),
+));
 ?>
 ```
 

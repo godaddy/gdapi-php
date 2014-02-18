@@ -25,7 +25,7 @@ namespace GDAPI;
 
 class Client
 {
-  const VERSION = "1.1.0";
+  const VERSION = "1.1.1";
 
   const MIME_TYPE_JSON = 'application/json';
 

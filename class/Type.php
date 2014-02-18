@@ -166,7 +166,7 @@ class Type
           $qs .= '&' . urlencode($name);
 
           // Only add value if it's meaningful
-          // (Note: A filter with value => null is invalid, use array('modifier' => null) to say that a field is null)
+          // (Note: A filter with value => null is invalid, use array('modifier' => 'null') to say that a field is null)
           if ( $value !== null )
             $qs .= '='. urlencode($value);
         }
