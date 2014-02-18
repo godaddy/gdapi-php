@@ -114,18 +114,39 @@ class Type
     # Filters
     if ( isset($opt['filters']) && count($opt['filters']) )
     {
+      // 'filters' is a hash of field names => filter or array(filters)
+      // Each filter value can be:
+      // - A simple literal like 'blah', ("name equals blah")
+      // - A hash with modifier and/or value: array('modifier' => 'ne', value => 'blah') ("name is not equal to blah")
+      // - An array of one or more of the above: array('blah', array('modifier' => 'notnull') ("name is equal to blah AND name is not null")
+
+      // Loop over the hash of each field name
       foreach ( $opt['filters'] as $fieldName => $list )
       {
-        if ( isset($list['value']) || isset($list['modifier']) )
+        // Turn whatever the input was into an aray of individual filters to check
+        if ( !is_array($list) )
         {
+          // Simple value
           $list = array($list);
         }
+        else if ( isset($list['value']) || isset($list['modifier']) )
+        {
+          // It's an "array", but really a hash like array('modifier' => 'blah', 'value' => blah')
+          $list = array($list);
+        }
+        else
+        {
+          // Already an array of individual filters, do nothing
+        }
 
+        // Loop over each individual filter for this field
         foreach ( $list as $filter )
         {
+          // This is a filter like  array('modifier' => 'blah', 'value' => blah')
           if ( is_array($filter) && ( isset($filter['value']) || isset($filter['modifier']) ) )
           {
             $name = $fieldName;
+
             if ( isset($filter['modifier']) && $filter['modifier'] != '' && $filter['modifier'] != 'eq' )
               $name .= '_' . $filter['modifier'];
 
@@ -137,11 +158,17 @@ class Type
           }
           else
           {
+            // This is a simple literal name=value literal
             $name = $fieldName;
             $value = $filter;
           }
           
-          $qs .= '&' . urlencode($name) . ( $value === null ? '' : '='. urlencode($value));
+          $qs .= '&' . urlencode($name);
+
+          // Only add value if it's meaningful
+          // (Note: A filter with value => null is invalid, use array('modifier' => null) to say that a field is null)
+          if ( $value !== null )
+            $qs .= '='. urlencode($value);
         }
       }
     }
